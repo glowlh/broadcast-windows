@@ -23,6 +23,9 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      'quotes': ['error', 'single', { 'avoidEscape': true }],
+      'object-curly-spacing': ['error', 'always'],
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
 )

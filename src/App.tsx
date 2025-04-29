@@ -1,8 +1,8 @@
-import {useState, useRef, useEffect} from 'react'
-import {Box, Particle, PortalBox} from "./styles.ts";
+import { useState, useRef, useEffect } from 'react'
+import { Box, Particle, PortalBox } from './styles.ts';
 import { WindowObserver } from './WindowObserver';
-import { Path as IPath } from "./types.ts";
-import {Path} from "./Path";
+import { Path as IPath } from './types.ts';
+import { Path } from './Path';
 const wo = new WindowObserver();
 let p: Path;
 
@@ -11,7 +11,7 @@ function App() {
   const [path, setPath] = useState<IPath>();
   const portalRef = useRef(null);
 
-  const handleOpenNewWindow = (event) => {
+  const handleOpenNewWindow = () => {
     window.open('/', `window ${self.crypto.randomUUID()}`, 'width=600,height=400');
   }
 

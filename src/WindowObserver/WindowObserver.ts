@@ -1,10 +1,9 @@
-import {WindowParams} from "../types.ts";
+import { WindowParams } from "../types.ts";
 
-const STORAGE_WINDOWS_PARAMS_NAME = 'WINDOWS';
-const STORAGE_WINDOWS_COUNT_NAME = 'COUNT';
+const STORAGE_WINDOWS_PARAMS_NAME = "WINDOWS";
+const STORAGE_WINDOWS_COUNT_NAME = "COUNT";
 
 export class WindowObserver {
-
   private _interval;
   private _count;
 
@@ -17,7 +16,8 @@ export class WindowObserver {
 
   private _init() {
     this._interval = setInterval(this._store.bind(this), 1000);
-    this._count = parseInt(localStorage.getItem(STORAGE_WINDOWS_COUNT_NAME), 10) || 0;
+    this._count =
+      parseInt(localStorage.getItem(STORAGE_WINDOWS_COUNT_NAME), 10) || 0;
     this._count++;
     this.id = `window_${this._count}`;
     this.index = this._count;
@@ -25,7 +25,7 @@ export class WindowObserver {
     localStorage.setItem(STORAGE_WINDOWS_COUNT_NAME, this._count);
 
     // TODO: add event for updating storage
-    window.addEventListener('beforeunload', () => {
+    window.addEventListener("beforeunload", () => {
       this._count = localStorage.getItem(STORAGE_WINDOWS_COUNT_NAME) || 0;
       this._count = this._count - 1 < 0 ? 0 : this._count - 1;
       localStorage.setItem(STORAGE_WINDOWS_COUNT_NAME, this._count);
@@ -33,18 +33,23 @@ export class WindowObserver {
       const storedParams = localStorage.getItem(STORAGE_WINDOWS_PARAMS_NAME);
       const parsedParams = JSON.parse(storedParams);
       delete parsedParams[this.id];
-      localStorage.setItem(STORAGE_WINDOWS_PARAMS_NAME, JSON.stringify(parsedParams));
+      localStorage.setItem(
+        STORAGE_WINDOWS_PARAMS_NAME,
+        JSON.stringify(parsedParams),
+      );
     });
   }
 
-  private  _isEqualParams(currentParams, storedParams) {
-    return currentParams.x === storedParams.x &&
+  private _isEqualParams(currentParams, storedParams) {
+    return (
+      currentParams.x === storedParams.x &&
       currentParams.y === storedParams.y &&
       currentParams.width === storedParams.width &&
-      currentParams.height === storedParams.height;
+      currentParams.height === storedParams.height
+    );
   }
 
-  private  _store() {
+  private _store() {
     const windowParams = this._getWindowParams();
 
     const storedParams = localStorage.getItem(STORAGE_WINDOWS_PARAMS_NAME);
@@ -57,7 +62,7 @@ export class WindowObserver {
         if (!this._isEqualParams(windowParams, nextStoredParams[this.id])) {
           nextStoredParams[this.id] = {
             id: this.id,
-            ...windowParams
+            ...windowParams,
           };
         } else {
           return;
@@ -65,20 +70,23 @@ export class WindowObserver {
       } else {
         nextStoredParams[this.id] = {
           id: this.id,
-          ...windowParams
+          ...windowParams,
         };
       }
     } else {
       nextStoredParams[this.id] = {
         id: this.id,
         ...windowParams,
-      }
+      };
     }
 
-    localStorage.setItem(STORAGE_WINDOWS_PARAMS_NAME, JSON.stringify(nextStoredParams));
+    localStorage.setItem(
+      STORAGE_WINDOWS_PARAMS_NAME,
+      JSON.stringify(nextStoredParams),
+    );
   }
 
-  private  _getWindowParams(): WindowParams {
+  private _getWindowParams(): WindowParams {
     return {
       x: window.screenLeft,
       y: window.screenTop,
@@ -94,7 +102,7 @@ export class WindowObserver {
   }
 
   stop() {
-    console.info('--stop--');
+    console.info("--stop--");
     clearInterval(this._interval);
   }
 
@@ -103,7 +111,7 @@ export class WindowObserver {
   }
 
   clear() {
-    console.info('--clear--');
+    console.info("--clear--");
     localStorage.clear();
   }
 
@@ -140,10 +148,10 @@ export class WindowObserver {
       return false;
     }
 
-    let min = 0;
+    const min = 0;
     let minObj: unknown = {};
 
-    Object.entries(parsedStoredParams).map(([key, val]) => {
+    Object.entries(parsedStoredParams).map(([, val]) => {
       if (val.index <= min) {
         minObj = val;
       }

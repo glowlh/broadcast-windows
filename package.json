@@ -7,9 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint my-vue-app",
+    "lint:fix": "eslint --fix --ext .txs,.ts,.html,.js,.md,.json ./src && prettier --write 'src/**/*.{txs,ts,html,js,md,json}'",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@stylistic/eslint-plugin-ts": "^4.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "styled-components": "^6.1.17"
@@ -23,6 +25,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
+    "prettier": "3.5.3",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.26.1",
     "vite": "^6.3.1"

@@ -1,4 +1,4 @@
-import {WindowParams, Path as IPath, AnimationParams} from "../types.ts";
+import { WindowParams, Path as IPath, AnimationParams } from "../types.ts";
 
 export class Path {
   private _pX;
@@ -8,19 +8,14 @@ export class Path {
   private _isMain: boolean = false;
 
   constructor(props: {
-    portalPosition: DOMRect,
-    windowParams: WindowParams | null,
-    anotherWindowParams: WindowParams | null,
-    isMain: boolean,
+    portalPosition: DOMRect;
+    windowParams: WindowParams | null;
+    anotherWindowParams: WindowParams | null;
+    isMain: boolean;
   }) {
-    const {
-      portalPosition,
-      windowParams,
-      anotherWindowParams,
-      isMain,
-    } = props;
+    const { portalPosition, windowParams, anotherWindowParams, isMain } = props;
 
-    const { x, y} = portalPosition;
+    const { x, y } = portalPosition;
     this._pX = x;
     this._pY = y;
     this._window = windowParams;
@@ -69,7 +64,9 @@ export class Path {
     if (this._isMain) {
       return {
         x: this._window.x,
-        y: (to.y - from.y) * (this._window.x - from.x) / (to.x - from.x) + from.y,
+        y:
+          ((to.y - from.y) * (this._window.x - from.x)) / (to.x - from.x) +
+          from.y,
       };
     }
 
@@ -91,13 +88,10 @@ export class Path {
   }
 
   update(props: {
-    windowParams: WindowParams | null,
-    anotherWindowParams: WindowParams | null,
+    windowParams: WindowParams | null;
+    anotherWindowParams: WindowParams | null;
   }) {
-    const {
-      windowParams,
-      anotherWindowParams,
-    } = props;
+    const { windowParams, anotherWindowParams } = props;
 
     this._window = windowParams;
     this._anotherWindow = anotherWindowParams;
