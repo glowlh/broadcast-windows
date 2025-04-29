@@ -89,4 +89,17 @@ export class Path {
       y: y + this._window.y,
     };
   }
+
+  update(props: {
+    windowParams: WindowParams | null,
+    anotherWindowParams: WindowParams | null,
+  }) {
+    const {
+      windowParams,
+      anotherWindowParams,
+    } = props;
+
+    this._window = windowParams;
+    this._anotherWindow = anotherWindowParams;
+  }
 }

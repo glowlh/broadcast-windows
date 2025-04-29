@@ -24,6 +24,7 @@ export class WindowObserver {
 
     localStorage.setItem(STORAGE_WINDOWS_COUNT_NAME, this._count);
 
+    // TODO: add event for updating storage
     window.addEventListener('beforeunload', () => {
       this._count = localStorage.getItem(STORAGE_WINDOWS_COUNT_NAME) || 0;
       this._count = this._count - 1 < 0 ? 0 : this._count - 1;
@@ -83,6 +84,7 @@ export class WindowObserver {
       y: window.screenTop,
       width: window.innerWidth,
       height: window.innerHeight,
+      id: this.id,
     };
   }
 
@@ -131,7 +133,7 @@ export class WindowObserver {
     return anotherWindowParams;
   }
 
-  isMain() {
+  isMain(): boolean {
     const parsedStoredParams = this._getParsedWindowParams();
 
     if (!parsedStoredParams) {

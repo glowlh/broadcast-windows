@@ -13,4 +13,5 @@ export interface WindowParams {
   y: number;
   width: number;
   height: number;
+  id: string;
 }

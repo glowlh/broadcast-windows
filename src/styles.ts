@@ -30,6 +30,7 @@ export const PortalBox = styled.div`
 
 
 export const animationMoving = (from: AnimationParams, to: AnimationParams) => {
+  console.log(to);
   const animation = keyframes`
     0% {
         left: ${from.x || 0}px;

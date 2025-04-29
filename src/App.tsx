@@ -4,6 +4,7 @@ import { WindowObserver } from './WindowObserver';
 import { Path as IPath } from "./types.ts";
 import {Path} from "./Path";
 const wo = new WindowObserver();
+let p: Path;
 
 function App() {
   const [portalPosition, setPortalPosition] = useState<DOMRect>(null);
@@ -14,27 +15,56 @@ function App() {
     window.open('/', `window ${self.crypto.randomUUID()}`, 'width=600,height=400');
   }
 
+  const handleUpdateStorage = (event) => {
+    console.log('storage');
+    if (event && event.newValue) {
+      const parsed = JSON.parse(event.newValue);
+      console.dir({
+        windowParams: parsed[wo.id],
+        anotherWindowParams: parsed[wo.getAnotherWindowParamsFromStore()?.id],
+      });
+
+      p.update({
+        windowParams: parsed[wo.id],
+        anotherWindowParams: parsed[wo.getAnotherWindowParamsFromStore()?.id],
+      });
+      updatePath();
+    }
+  };
+
+  useEffect(() => {
+    // TODO: listen for another window
+    window.addEventListener('storage', handleUpdateStorage, true);
+
+    return () => window.removeEventListener('storage', handleUpdateStorage);
+  }, []);
+
+  const updatePath = () => {
+    const to = p.getIntersectionPoint();
+    const from = {
+      x: portalPosition?.x,
+      y: portalPosition?.y,
+    };
+
+    setPath({
+      from,
+      to,
+    });
+  };
+
   useEffect(() => {
     if (portalRef?.current) {
       const position: DOMRect = portalRef.current.getBoundingClientRect();
       setPortalPosition(position);
 
-      const nextPath = new Path({
+      p = new Path({
         portalPosition: position,
         windowParams: wo.getWindowParamsFromStore(),
         anotherWindowParams: wo.getAnotherWindowParamsFromStore(),
         isMain: wo.isMain(),
       });
-      const to = nextPath.getIntersectionPoint();
-      const from = {
-        x: position.x,
-        y: position.y,
-      };
 
-      setPath({
-        from,
-        to,
-      });
+      updatePath();
     }
   }, []);
 
@@ -46,10 +76,13 @@ function App() {
       <button onClick={() => wo.clear()}>Clear</button>
       <button onClick={handleOpenNewWindow}>Open new window</button>
 
-      <Particle
-        from={{ x: path?.from?.x, y: path?.from?.y }}
-        to={{ x: path?.to?.x, y: path?.to?.y }}
-      />
+      {
+        wo.isMain() ? <Particle
+          from={{ x: path?.from?.x, y: path?.from?.y }}
+          to={{ x: path?.to?.x, y: path?.to?.y }}
+        /> : null
+      }
+
       <PortalBox ref={portalRef} />
     </Box>
   );
