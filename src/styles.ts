@@ -1,33 +1,31 @@
-import styled, {createGlobalStyle, css, keyframes} from "styled-components";
-import {AnimationParams, Path} from "./types.ts";
+import styled, { createGlobalStyle, css, keyframes } from "styled-components";
+import { AnimationParams, Path } from "./types.ts";
 
 export const Box = styled.div`
-    background: #1a1a1a;
-    height: 100vh;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    color: #afafaf;
-    margin: auto;
-    
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    position: relative;
+  background: #1a1a1a;
+  height: 100vh;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  color: #afafaf;
+  margin: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
 `;
 
 export const PortalBox = styled.div`
-    width: 70px;
-    height: 70px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: blanchedalmond;
-    border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: blanchedalmond;
+  border-radius: 50%;
 `;
-
-
 
 export const animationMoving = (from: AnimationParams, to: AnimationParams) => {
   console.log(to);
@@ -42,19 +40,19 @@ export const animationMoving = (from: AnimationParams, to: AnimationParams) => {
     }
 `;
 
-  return css`${animation} 5s linear infinite`;
-}
-
-
+  return css`
+    ${animation} 5s linear infinite
+  `;
+};
 
 export const Particle = styled.div<Path>`
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: cornflowerblue;
-    border-radius: 50%;
-    animation: ${({ from, to }) => animationMoving(from, to)};
-`
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: cornflowerblue;
+  border-radius: 50%;
+  animation: ${({ from, to }) => animationMoving(from, to)};
+`;
 
 export const GlobalStyles = createGlobalStyle`
     html,
