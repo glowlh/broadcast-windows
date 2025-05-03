@@ -1,5 +1,6 @@
-import { WindowParams } from "../types.ts";
-import { StorageManager } from "../StorageManager";
+import { WindowParams } from '../types.ts';
+import { StorageManager } from '../StorageManager';
+import { updateWindowEvent } from '../UpdateWindowEvent';
 
 export class WindowObserver {
   private _interval;
@@ -19,12 +20,12 @@ export class WindowObserver {
     this._count = this._storageManager.getCount();
     this._count++;
     this.id = `window_${this._count}`;
-    this.index = this._count;
+    this.index = this._count - 1;
 
     this._storageManager.setCount(this._count);
 
     // TODO: add event for updating storage
-    window.addEventListener("beforeunload", () => {
+    window.addEventListener('beforeunload', () => {
       this._count = this._storageManager.getCount();
       this._count = this._count - 1 < 0 ? 0 : this._count - 1;
 
@@ -53,6 +54,7 @@ export class WindowObserver {
         if (!this._isEqualParams(windowParams, nextStoredParams[this.id])) {
           nextStoredParams[this.id] = {
             id: this.id,
+            index: this.index,
             ...windowParams,
           };
         } else {
@@ -61,17 +63,20 @@ export class WindowObserver {
       } else {
         nextStoredParams[this.id] = {
           id: this.id,
+          index: this.index,
           ...windowParams,
         };
       }
     } else {
       nextStoredParams[this.id] = {
         id: this.id,
+        index: this.index,
         ...windowParams,
       };
     }
 
     this._storageManager.setParamsAll(nextStoredParams);
+    window.dispatchEvent(updateWindowEvent);
   }
 
   private _getWindowParams(): WindowParams {
@@ -85,7 +90,7 @@ export class WindowObserver {
   }
 
   stop() {
-    console.info("--stop--");
+    console.info('--stop--');
     clearInterval(this._interval);
   }
 
@@ -94,7 +99,7 @@ export class WindowObserver {
   }
 
   clear() {
-    console.info("--clear--");
+    console.info('--clear--');
     this._storageManager.clearAll();
   }
 

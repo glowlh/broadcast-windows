@@ -1,30 +1,34 @@
 import { useState, useRef, useEffect } from 'react'
 import { Box, Particle, PortalBox } from './styles.ts';
 import { WindowObserver } from './WindowObserver';
-import { Path as IPath } from './types.ts';
+import { AnimationParams, Path as IPath } from './types.ts';
 import { Path } from './Path';
+import { StorageManager } from './StorageManager';
 const wo = new WindowObserver();
-let p: Path;
+let pathBuilder: Path;
 
 function App() {
-  const [portalPosition, setPortalPosition] = useState<DOMRect>(null);
   const [path, setPath] = useState<IPath>();
   const portalRef = useRef(null);
+
+  const getPortalPosition = () => {
+    if (portalRef?.current) {
+      const position: DOMRect = portalRef.current.getBoundingClientRect();
+      return position;
+    }
+
+    return null;
+  };
 
   const handleOpenNewWindow = () => {
     window.open('/', `window ${self.crypto.randomUUID()}`, 'width=600,height=400');
   }
 
   const handleUpdateStorage = (event) => {
-    console.log('storage');
     if (event && event.newValue) {
       const parsed = JSON.parse(event.newValue);
-      console.dir({
-        windowParams: parsed[wo.id],
-        anotherWindowParams: parsed[wo.getAnotherWindowParamsFromStore()?.id],
-      });
 
-      p.update({
+      pathBuilder.update({
         windowParams: parsed[wo.id],
         anotherWindowParams: parsed[wo.getAnotherWindowParamsFromStore()?.id],
       });
@@ -32,18 +36,27 @@ function App() {
     }
   };
 
+  const handleUpdateWindow = () => {
+    pathBuilder.update({
+      windowParams: wo.getWindowParamsFromStore(),
+      anotherWindowParams: wo.getAnotherWindowParamsFromStore(),
+    });
+    updatePath();
+  }
+
   useEffect(() => {
     // TODO: listen for another window
     window.addEventListener('storage', handleUpdateStorage, true);
+    window.addEventListener('updateWindow', handleUpdateWindow);
 
     return () => window.removeEventListener('storage', handleUpdateStorage);
   }, []);
 
   const updatePath = () => {
-    const to = p.getIntersectionPoint();
-    const from = {
-      x: portalPosition?.x,
-      y: portalPosition?.y,
+    const to = pathBuilder.getIntersectionPoint();
+    const from: AnimationParams = {
+      x: getPortalPosition()?.x || 0,
+      y: getPortalPosition()?.y || 0,
     };
 
     setPath({
@@ -53,19 +66,18 @@ function App() {
   };
 
   useEffect(() => {
-    if (portalRef?.current) {
-      const position: DOMRect = portalRef.current.getBoundingClientRect();
-      setPortalPosition(position);
+      const position: DOMRect | null = getPortalPosition();
 
-      p = new Path({
-        portalPosition: position,
-        windowParams: wo.getWindowParamsFromStore(),
-        anotherWindowParams: wo.getAnotherWindowParamsFromStore(),
-        isMain: wo.isMain(),
-      });
+      if (position) {
+        pathBuilder = new Path({
+          portalPosition: position,
+          windowParams: wo.getWindowParamsFromStore(),
+          anotherWindowParams: wo.getAnotherWindowParamsFromStore(),
+          isMain: wo.isMain(),
+        });
 
-      updatePath();
-    }
+        updatePath();
+      }
   }, []);
 
   return (

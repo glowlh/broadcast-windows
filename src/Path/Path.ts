@@ -1,4 +1,4 @@
-import { WindowParams, Path as IPath, AnimationParams } from "../types.ts";
+import { WindowParams, Path as IPath, AnimationParams } from '../types.ts';
 
 export class Path {
   private _pX;
@@ -41,16 +41,17 @@ export class Path {
       };
     }
 
-    return {
-      from: {
-        x: this._pX + this._anotherWindow.x,
-        y: this._pY + this._anotherWindow.y,
-      },
-      to: {
-        x: this._pX + this._window.x,
-        y: this._pY + this._window.y,
-      },
-    };
+    return null;
+    // {
+    //   from: {
+    //     x: this._pX + this._anotherWindow.x,
+    //     y: this._pY + this._anotherWindow.y,
+    //   },
+    //   to: {
+    //     x: this._pX + this._window.x,
+    //     y: this._pY + this._window.y,
+    //   },
+    // };
   }
 
   private _calcScreenIntersectionPoint(): AnimationParams | null {
@@ -63,9 +64,9 @@ export class Path {
 
     if (this._isMain) {
       return {
-        x: this._window.x,
+        x: this._window.x + this._window.width,
         y:
-          ((to.y - from.y) * (this._window.x - from.x)) / (to.x - from.x) +
+          ((to.y - from.y) * (this._window.x + this._window.width - from.x)) / (to.x - from.x) +
           from.y,
       };
     }

@@ -1,6 +1,6 @@
 export interface AnimationParams {
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
 }
 
 export interface Path {
