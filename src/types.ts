@@ -8,6 +8,8 @@ export interface Path {
   to: AnimationParams;
 }
 
+export type Storage = Record<string, WindowParams>;
+
 export interface WindowParams {
   x: number;
   y: number;
