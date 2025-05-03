@@ -86,15 +86,21 @@ export const animationMoving = (from: AnimationParams, to: AnimationParams) => {
 `;
 
   return css`
-    ${animation} 5s linear infinite
+    ${animation} 5s linear
   `;
 };
 
-export const Particle = styled.img<Path>`
+export const Particle = styled.img<Path & { hasAnimation: boolean }>`
   position: absolute;
   width: 30px;
   height: 30px;
-  animation: ${({ from, to }) => animationMoving(from, to)};
+  ${({ hasAnimation }) =>
+    hasAnimation
+      ? css`
+          animation: ${({ from, to }) => animationMoving(from, to)};
+        `
+      : ""}}
+  
 `;
 
 export const GlobalStyles = createGlobalStyle`

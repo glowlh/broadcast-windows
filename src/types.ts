@@ -8,7 +8,9 @@ export interface Path {
   to: AnimationParams;
 }
 
-export type Storage = Record<string, WindowParams>;
+export type WindowsParamsStorage = Record<string, WindowParams>;
+
+export type AnimationStorage = Record<string, boolean>;
 
 export interface WindowParams {
   x: number;

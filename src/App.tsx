@@ -4,11 +4,13 @@ import { Box, Particle, PortalBox } from './styles.ts';
 import { WindowObserver } from './WindowObserver';
 import { AnimationParams, Path as IPath } from './types.ts';
 import { Path } from './Path';
+import { STORAGE_ANIMATION_STATE, STORAGE_WINDOWS_PARAMS_NAME } from './StorageManager';
 const wo = new WindowObserver();
 let pathBuilder: Path;
 
 function App() {
   const [path, setPath] = useState<IPath>();
+  const [hasAnimation, setHasAnimation] = useState(false);
   const portalRef = useRef(null);
 
   const getPortalPosition = () => {
@@ -25,14 +27,16 @@ function App() {
   }
 
   const handleUpdateStorage = (event) => {
-    if (event && event.newValue) {
-      const parsed = JSON.parse(event.newValue);
-
+    if (event.key === STORAGE_WINDOWS_PARAMS_NAME) {
       pathBuilder.update({
-        windowParams: parsed[wo.id],
-        anotherWindowParams: parsed[wo.getAnotherWindowParamsFromStore()?.id],
+        windowParams: wo.getWindowParamsFromStore(),
+        anotherWindowParams: wo.getAnotherWindowParamsFromStore(),
       });
       updatePath();
+    }
+
+    if (event.key === STORAGE_ANIMATION_STATE && wo.activeAnimation === wo.id) {
+      setHasAnimation(true);
     }
   };
 
@@ -82,16 +86,34 @@ function App() {
       }
   }, []);
 
+  const handleStartAnimation = () => {
+    wo.startAnimation();
+    setHasAnimation(true);
+  }
+
+  const handleEndAnimation = () => {
+    wo.stopAnimation();
+    setHasAnimation(false);
+  }
+
+  const handleClickStart = () => {
+    wo.start();
+    setHasAnimation(wo.activeAnimation === wo.id || wo.animationCount === 1);
+  }
+
   return (
     <Box>
       Window {wo.id}
-      <button onClick={() => wo.start()}>Start</button>
+      <button onClick={handleClickStart}>Start</button>
       <button onClick={() => wo.stop()}>Stop</button>
       <button onClick={() => wo.clear()}>Clear</button>
       <button onClick={handleOpenNewWindow}>Open new window</button>
 
       {
-        wo.isMain ? <Particle
+        hasAnimation ? <Particle
+          hasAnimation={hasAnimation}
+          onAnimationEnd={handleEndAnimation}
+          onAnimationStart={handleStartAnimation}
           alt=''
           src={boxImage}
           from={{ x: path?.from?.x, y: path?.from?.y }}
