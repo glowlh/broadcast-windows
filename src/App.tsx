@@ -45,11 +45,13 @@ function App() {
   }
 
   useEffect(() => {
-    // TODO: listen for another window
     window.addEventListener('storage', handleUpdateStorage, true);
     window.addEventListener('updateWindow', handleUpdateWindow);
 
-    return () => window.removeEventListener('storage', handleUpdateStorage);
+    return () => {
+      window.removeEventListener('storage', handleUpdateStorage);
+      window.removeEventListener('updateWindow', handleUpdateWindow);
+    }
   }, []);
 
   const updatePath = () => {
