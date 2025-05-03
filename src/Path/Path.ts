@@ -1,4 +1,4 @@
-import { WindowParams, Path as IPath, AnimationParams } from '../types.ts';
+import { WindowParams, Path as IPath, AnimationParams } from "../types.ts";
 
 export class Path {
   private _pX;
@@ -63,12 +63,24 @@ export class Path {
     const { from, to } = path;
 
     if (this._isMain) {
-      return {
-        x: this._window.x + this._window.width,
-        y:
-          ((to.y - from.y) * (this._window.x + this._window.width - from.x)) / (to.x - from.x) +
-          from.y,
-      };
+      if (from.x < to.x) {
+        return {
+          x: this._window.x + this._window.width,
+          y:
+            ((to.y - from.y) * (this._window.x + this._window.width - from.x)) /
+              (to.x - from.x) +
+            from.y,
+        };
+      } else {
+        return {
+          x:
+            ((this._window.y + this._window.height - from.y) *
+              (to.x - from.x)) /
+              (to.y - from.y) +
+            from.x,
+          y: this._window.y + this._window.height,
+        };
+      }
     }
 
     return null;
@@ -83,8 +95,8 @@ export class Path {
     const { x, y } = coords;
 
     return {
-      x: x + this._window.x,
-      y: y + this._window.y,
+      x: x - this._window.x,
+      y: y - this._window.y,
     };
   }
 

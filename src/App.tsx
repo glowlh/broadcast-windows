@@ -1,14 +1,16 @@
 import { useState, useRef, useEffect } from 'react'
+import boxImage from '../public/box.png';
 import { Box, Particle, PortalBox } from './styles.ts';
 import { WindowObserver } from './WindowObserver';
 import { AnimationParams, Path as IPath } from './types.ts';
 import { Path } from './Path';
-import { StorageManager } from './StorageManager';
+import { STORAGE_ANIMATION_STATE, STORAGE_WINDOWS_PARAMS_NAME } from './StorageManager';
 const wo = new WindowObserver();
 let pathBuilder: Path;
 
 function App() {
   const [path, setPath] = useState<IPath>();
+  const [hasAnimation, setHasAnimation] = useState(false);
   const portalRef = useRef(null);
 
   const getPortalPosition = () => {
@@ -25,14 +27,16 @@ function App() {
   }
 
   const handleUpdateStorage = (event) => {
-    if (event && event.newValue) {
-      const parsed = JSON.parse(event.newValue);
-
+    if (event.key === STORAGE_WINDOWS_PARAMS_NAME) {
       pathBuilder.update({
-        windowParams: parsed[wo.id],
-        anotherWindowParams: parsed[wo.getAnotherWindowParamsFromStore()?.id],
+        windowParams: wo.getWindowParamsFromStore(),
+        anotherWindowParams: wo.getAnotherWindowParamsFromStore(),
       });
       updatePath();
+    }
+
+    if (event.key === STORAGE_ANIMATION_STATE && wo.activeAnimation === wo.id) {
+      setHasAnimation(true);
     }
   };
 
@@ -57,8 +61,8 @@ function App() {
   const updatePath = () => {
     const to = pathBuilder.getIntersectionPoint();
     const from: AnimationParams = {
-      x: getPortalPosition()?.x || 0,
-      y: getPortalPosition()?.y || 0,
+      x: getPortalPosition() ? getPortalPosition()?.x + getPortalPosition()?.width / 2 : 0,
+      y: getPortalPosition() ? getPortalPosition()?.y + getPortalPosition()?.height / 2 : 0,
     };
 
     setPath({
@@ -75,29 +79,49 @@ function App() {
           portalPosition: position,
           windowParams: wo.getWindowParamsFromStore(),
           anotherWindowParams: wo.getAnotherWindowParamsFromStore(),
-          isMain: wo.isMain(),
+          isMain: wo.isMain,
         });
 
         updatePath();
       }
   }, []);
 
+  const handleStartAnimation = () => {
+    wo.startAnimation();
+    setHasAnimation(true);
+  }
+
+  const handleEndAnimation = () => {
+    wo.stopAnimation();
+    setHasAnimation(false);
+  }
+
+  const handleClickStart = () => {
+    wo.start();
+    setHasAnimation(wo.activeAnimation === wo.id || wo.animationCount === 1);
+  }
+
   return (
     <Box>
       Window {wo.id}
-      <button onClick={() => wo.start()}>Start</button>
+      <button onClick={handleClickStart}>Start</button>
       <button onClick={() => wo.stop()}>Stop</button>
       <button onClick={() => wo.clear()}>Clear</button>
       <button onClick={handleOpenNewWindow}>Open new window</button>
 
       {
-        wo.isMain() ? <Particle
+        hasAnimation ? <Particle
+          hasAnimation={hasAnimation}
+          onAnimationEnd={handleEndAnimation}
+          onAnimationStart={handleStartAnimation}
+          alt=''
+          src={boxImage}
           from={{ x: path?.from?.x, y: path?.from?.y }}
           to={{ x: path?.to?.x, y: path?.to?.y }}
         /> : null
       }
 
-      <PortalBox ref={portalRef} />
+      <PortalBox ref={portalRef} isMain={wo.isMain} />
     </Box>
   );
 }

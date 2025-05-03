@@ -1,1 +1,1 @@
-export * from './WindowObserver.ts';
+export * from "./WindowObserver.ts";

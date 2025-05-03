@@ -1,22 +1,26 @@
-import { Storage, WindowParams } from '../types.ts';
+import { WindowsParamsStorage, WindowParams } from "../types.ts";
 
-const STORAGE_WINDOWS_PARAMS_NAME = 'WINDOWS';
-const STORAGE_WINDOWS_COUNT_NAME = 'COUNT';
+export const STORAGE_WINDOWS_PARAMS_NAME = "WINDOWS";
+export const STORAGE_WINDOWS_COUNT_NAME = "COUNT";
+export const STORAGE_ANIMATION_STATE = "ANIMATION";
 
 export class StorageManager {
   public paramsScope: string;
   public countScope: string;
+  public animationScope: string;
 
-  constructor(props?: { params?: string; count?: string }) {
+  constructor(props?: { params?: string; count?: string; animation?: string }) {
     if (!props) {
       this.paramsScope = STORAGE_WINDOWS_PARAMS_NAME;
       this.countScope = STORAGE_WINDOWS_COUNT_NAME;
+      this.animationScope = STORAGE_ANIMATION_STATE;
       return this;
     }
 
-    const { params, count } = props;
+    const { params, count, animation } = props;
     this.paramsScope = params || STORAGE_WINDOWS_PARAMS_NAME;
     this.countScope = count || STORAGE_WINDOWS_COUNT_NAME;
+    this.animationScope = animation || STORAGE_ANIMATION_STATE;
   }
 
   getCount() {
@@ -41,7 +45,7 @@ export class StorageManager {
     return JSON.parse(storedParams);
   }
 
-  setParamsAll(params: Storage) {
+  setParamsAll(params: WindowsParamsStorage) {
     localStorage.setItem(this.paramsScope, JSON.stringify(params));
   }
 
@@ -83,5 +87,74 @@ export class StorageManager {
 
   clearAll() {
     localStorage.clear();
+  }
+
+  getAnimationAll() {
+    const animations = localStorage.getItem(this.animationScope);
+    if (!animations) {
+      return null;
+    }
+
+    return JSON.parse(animations);
+  }
+
+  getActiveAnimation(): null | string {
+    const animations = this.getAnimationAll();
+    if (!animations) {
+      return null;
+    }
+
+    let activeId = null;
+    Object.entries(animations).some(([key, value]) => {
+      if (value) {
+        activeId = key;
+        return true;
+      }
+
+      return false;
+    });
+
+    return activeId;
+  }
+
+  setActiveAnimationById(id: string) {
+    const animations = this.getAnimationAll();
+    if (!animations) {
+      return null;
+    }
+
+    for (const key in animations) {
+      animations[key] = key === id;
+    }
+
+    localStorage.setItem(this.animationScope, JSON.stringify(animations));
+  }
+
+  setInactiveAnimationById(id: string) {
+    const animations = this.getAnimationAll();
+    if (!animations) {
+      return null;
+    }
+
+    animations[id] = false;
+    localStorage.setItem(this.animationScope, JSON.stringify(animations));
+  }
+
+  addAnimationForWindow(id: string) {
+    const animations = this.getAnimationAll() || {};
+    if (!animations[id]) {
+      animations[id] = false;
+      localStorage.setItem(this.animationScope, JSON.stringify(animations));
+    }
+  }
+
+  deleteAnimationForWindow(id: string) {
+    const animations = this.getAnimationAll();
+    if (!animations) {
+      return null;
+    }
+
+    delete animations[id];
+    localStorage.setItem(this.animationScope, JSON.stringify(animations));
   }
 }

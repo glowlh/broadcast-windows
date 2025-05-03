@@ -1,5 +1,16 @@
-import styled, { createGlobalStyle, css, keyframes } from 'styled-components';
-import { AnimationParams, Path } from './types.ts';
+import styled, { createGlobalStyle, css, keyframes } from "styled-components";
+import { AnimationParams, Path } from "./types.ts";
+
+const PORTAL_COLOR = {
+  main: {
+    border: "#0559D8",
+    shadow: "rgba(72, 140, 232, 0.51)",
+  },
+  secondary: {
+    border: "#B0320B",
+    shadow: "rgba(232, 142, 86, 0.51)",
+  },
+};
 
 export const Box = styled.div`
   background: #1a1a1a;
@@ -14,18 +25,50 @@ export const Box = styled.div`
   flex-direction: column;
   gap: 8px;
   position: relative;
-    overflow: hidden;
+  overflow: hidden;
 `;
 
-export const PortalBox = styled.div`
+const portalAnimation = keyframes`
+    0% {
+        transform: rotate(0deg) skew(0deg, 0deg);
+    }
+    50% {
+        transform: rotate(-15deg) skew(20deg, 30deg);
+    }
+    100% {
+        transform: rotate(-35deg) skew(0deg, 0deg);
+    }
+`;
+
+export const PortalBox = styled.div<{ isMain: boolean }>`
   width: 70px;
-  height: 70px;
+  height: 40px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: blanchedalmond;
+  background: transparent;
   border-radius: 50%;
+  border: 2px solid
+    ${({ isMain }) =>
+      isMain ? PORTAL_COLOR.main.border : PORTAL_COLOR.secondary.border};
+
+  animation: 4s linear 0s infinite alternate ${portalAnimation};
+  box-shadow: 0px 0px 20px 2px
+    ${({ isMain }) =>
+      isMain ? PORTAL_COLOR.main.shadow : PORTAL_COLOR.secondary.shadow};
+
+  &:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-shadow: 0px 0px 10px 0px
+      ${({ isMain }) =>
+        isMain ? PORTAL_COLOR.main.shadow : PORTAL_COLOR.secondary.shadow}
+      inset;
+  }
 `;
 
 export const animationMoving = (from: AnimationParams, to: AnimationParams) => {
@@ -33,25 +76,31 @@ export const animationMoving = (from: AnimationParams, to: AnimationParams) => {
     0% {
         left: ${from.x || 0}px;
         top: ${from.y || 0}px;
+        transform: rotate(0deg);
     }
     100% {
         left: ${to.x || 0}px;
         top: ${to.y || 0}px;
+        transform: rotate(360deg);
     }
 `;
 
   return css`
-    ${animation} 5s linear infinite
+    ${animation} 5s linear
   `;
 };
 
-export const Particle = styled.div<Path>`
+export const Particle = styled.img<Path & { hasAnimation: boolean }>`
   position: absolute;
-  width: 20px;
-  height: 20px;
-  background: cornflowerblue;
-  border-radius: 50%;
-  animation: ${({ from, to }) => animationMoving(from, to)};
+  width: 30px;
+  height: 30px;
+  ${({ hasAnimation }) =>
+    hasAnimation
+      ? css`
+          animation: ${({ from, to }) => animationMoving(from, to)};
+        `
+      : ""}}
+  
 `;
 
 export const GlobalStyles = createGlobalStyle`
