@@ -1,6 +1,6 @@
-import { WindowParams } from '../types.ts';
-import { StorageManager } from '../StorageManager';
-import { updateWindowEvent } from '../UpdateWindowEvent';
+import { WindowParams } from "../types.ts";
+import { StorageManager } from "../StorageManager";
+import { updateWindowEvent } from "../UpdateWindowEvent";
 
 export class WindowObserver {
   private _interval;
@@ -25,7 +25,7 @@ export class WindowObserver {
     this._storageManager.setCount(this._count);
 
     // TODO: add event for updating storage
-    window.addEventListener('beforeunload', () => {
+    window.addEventListener("beforeunload", () => {
       this._count = this._storageManager.getCount();
       this._count = this._count - 1 < 0 ? 0 : this._count - 1;
 
@@ -90,7 +90,7 @@ export class WindowObserver {
   }
 
   stop() {
-    console.info('--stop--');
+    console.info("--stop--");
     clearInterval(this._interval);
   }
 
@@ -99,7 +99,7 @@ export class WindowObserver {
   }
 
   clear() {
-    console.info('--clear--');
+    console.info("--clear--");
     this._storageManager.clearAll();
   }
 
@@ -127,11 +127,11 @@ export class WindowObserver {
     return anotherWindowParams;
   }
 
-  isMain(): boolean {
+  get isMain(): boolean {
     const parsedStoredParams = this._storageManager.getParamsAll();
 
     if (!parsedStoredParams) {
-      return false;
+      return true;
     }
 
     const min = 0;

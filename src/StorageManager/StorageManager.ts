@@ -1,7 +1,7 @@
-import { Storage, WindowParams } from '../types.ts';
+import { Storage, WindowParams } from "../types.ts";
 
-const STORAGE_WINDOWS_PARAMS_NAME = 'WINDOWS';
-const STORAGE_WINDOWS_COUNT_NAME = 'COUNT';
+const STORAGE_WINDOWS_PARAMS_NAME = "WINDOWS";
+const STORAGE_WINDOWS_COUNT_NAME = "COUNT";
 
 export class StorageManager {
   public paramsScope: string;

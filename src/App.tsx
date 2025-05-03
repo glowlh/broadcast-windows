@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
+import boxImage from '../public/box.png';
 import { Box, Particle, PortalBox } from './styles.ts';
 import { WindowObserver } from './WindowObserver';
 import { AnimationParams, Path as IPath } from './types.ts';
 import { Path } from './Path';
-import { StorageManager } from './StorageManager';
 const wo = new WindowObserver();
 let pathBuilder: Path;
 
@@ -57,8 +57,8 @@ function App() {
   const updatePath = () => {
     const to = pathBuilder.getIntersectionPoint();
     const from: AnimationParams = {
-      x: getPortalPosition()?.x || 0,
-      y: getPortalPosition()?.y || 0,
+      x: getPortalPosition() ? getPortalPosition()?.x + getPortalPosition()?.width / 2 : 0,
+      y: getPortalPosition() ? getPortalPosition()?.y + getPortalPosition()?.height / 2 : 0,
     };
 
     setPath({
@@ -75,7 +75,7 @@ function App() {
           portalPosition: position,
           windowParams: wo.getWindowParamsFromStore(),
           anotherWindowParams: wo.getAnotherWindowParamsFromStore(),
-          isMain: wo.isMain(),
+          isMain: wo.isMain,
         });
 
         updatePath();
@@ -91,13 +91,15 @@ function App() {
       <button onClick={handleOpenNewWindow}>Open new window</button>
 
       {
-        wo.isMain() ? <Particle
+        wo.isMain ? <Particle
+          alt=''
+          src={boxImage}
           from={{ x: path?.from?.x, y: path?.from?.y }}
           to={{ x: path?.to?.x, y: path?.to?.y }}
         /> : null
       }
 
-      <PortalBox ref={portalRef} />
+      <PortalBox ref={portalRef} isMain={wo.isMain} />
     </Box>
   );
 }
