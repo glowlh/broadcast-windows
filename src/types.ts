@@ -1,12 +1,14 @@
 export interface AnimationParams {
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
 }
 
 export interface Path {
   from: AnimationParams;
   to: AnimationParams;
 }
+
+export type Storage = Record<string, WindowParams>;
 
 export interface WindowParams {
   x: number;

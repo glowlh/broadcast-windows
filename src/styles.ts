@@ -1,5 +1,5 @@
-import styled, { createGlobalStyle, css, keyframes } from "styled-components";
-import { AnimationParams, Path } from "./types.ts";
+import styled, { createGlobalStyle, css, keyframes } from 'styled-components';
+import { AnimationParams, Path } from './types.ts';
 
 export const Box = styled.div`
   background: #1a1a1a;
@@ -14,6 +14,7 @@ export const Box = styled.div`
   flex-direction: column;
   gap: 8px;
   position: relative;
+    overflow: hidden;
 `;
 
 export const PortalBox = styled.div`
@@ -28,15 +29,14 @@ export const PortalBox = styled.div`
 `;
 
 export const animationMoving = (from: AnimationParams, to: AnimationParams) => {
-  console.log(to);
   const animation = keyframes`
     0% {
         left: ${from.x || 0}px;
-        top: ${from.x || 0}px;
+        top: ${from.y || 0}px;
     }
     100% {
         left: ${to.x || 0}px;
-        top: ${to.x || 0}px;
+        top: ${to.y || 0}px;
     }
 `;
 

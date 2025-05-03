@@ -1,42 +1,36 @@
-import { WindowParams } from "../types.ts";
-
-const STORAGE_WINDOWS_PARAMS_NAME = "WINDOWS";
-const STORAGE_WINDOWS_COUNT_NAME = "COUNT";
+import { WindowParams } from '../types.ts';
+import { StorageManager } from '../StorageManager';
+import { updateWindowEvent } from '../UpdateWindowEvent';
 
 export class WindowObserver {
   private _interval;
   private _count;
+  private _storageManager: StorageManager;
 
   public id;
   public index;
 
   constructor() {
     // this._init();
+    this._storageManager = new StorageManager();
   }
 
   private _init() {
     this._interval = setInterval(this._store.bind(this), 1000);
-    this._count =
-      parseInt(localStorage.getItem(STORAGE_WINDOWS_COUNT_NAME), 10) || 0;
+    this._count = this._storageManager.getCount();
     this._count++;
     this.id = `window_${this._count}`;
-    this.index = this._count;
+    this.index = this._count - 1;
 
-    localStorage.setItem(STORAGE_WINDOWS_COUNT_NAME, this._count);
+    this._storageManager.setCount(this._count);
 
     // TODO: add event for updating storage
-    window.addEventListener("beforeunload", () => {
-      this._count = localStorage.getItem(STORAGE_WINDOWS_COUNT_NAME) || 0;
+    window.addEventListener('beforeunload', () => {
+      this._count = this._storageManager.getCount();
       this._count = this._count - 1 < 0 ? 0 : this._count - 1;
-      localStorage.setItem(STORAGE_WINDOWS_COUNT_NAME, this._count);
 
-      const storedParams = localStorage.getItem(STORAGE_WINDOWS_PARAMS_NAME);
-      const parsedParams = JSON.parse(storedParams);
-      delete parsedParams[this.id];
-      localStorage.setItem(
-        STORAGE_WINDOWS_PARAMS_NAME,
-        JSON.stringify(parsedParams),
-      );
+      this._storageManager.setCount(this._count);
+      this._storageManager.deleteParamsById(this.id);
     });
   }
 
@@ -52,16 +46,15 @@ export class WindowObserver {
   private _store() {
     const windowParams = this._getWindowParams();
 
-    const storedParams = localStorage.getItem(STORAGE_WINDOWS_PARAMS_NAME);
-    let nextStoredParams = {};
+    const storedParams = this._storageManager.getParamsAll();
+    const nextStoredParams = storedParams || {};
 
     if (storedParams) {
-      nextStoredParams = JSON.parse(storedParams);
-
       if (nextStoredParams[this.id]) {
         if (!this._isEqualParams(windowParams, nextStoredParams[this.id])) {
           nextStoredParams[this.id] = {
             id: this.id,
+            index: this.index,
             ...windowParams,
           };
         } else {
@@ -70,20 +63,20 @@ export class WindowObserver {
       } else {
         nextStoredParams[this.id] = {
           id: this.id,
+          index: this.index,
           ...windowParams,
         };
       }
     } else {
       nextStoredParams[this.id] = {
         id: this.id,
+        index: this.index,
         ...windowParams,
       };
     }
 
-    localStorage.setItem(
-      STORAGE_WINDOWS_PARAMS_NAME,
-      JSON.stringify(nextStoredParams),
-    );
+    this._storageManager.setParamsAll(nextStoredParams);
+    window.dispatchEvent(updateWindowEvent);
   }
 
   private _getWindowParams(): WindowParams {
@@ -96,13 +89,8 @@ export class WindowObserver {
     };
   }
 
-  private _getParsedWindowParams() {
-    const storedParams = localStorage.getItem(STORAGE_WINDOWS_PARAMS_NAME);
-    return JSON.parse(storedParams);
-  }
-
   stop() {
-    console.info("--stop--");
+    console.info('--stop--');
     clearInterval(this._interval);
   }
 
@@ -111,18 +99,16 @@ export class WindowObserver {
   }
 
   clear() {
-    console.info("--clear--");
-    localStorage.clear();
+    console.info('--clear--');
+    this._storageManager.clearAll();
   }
 
   getWindowParamsFromStore(): WindowParams | null {
-    const parsedStoredParams = this._getParsedWindowParams() || {};
-
-    return parsedStoredParams[this.id] || null;
+    return this._storageManager.getParamsById(this.id);
   }
 
   getAnotherWindowParamsFromStore(): WindowParams | null {
-    const parsedStoredParams = this._getParsedWindowParams();
+    const parsedStoredParams = this._storageManager.getParamsAll();
     let anotherWindowParams = null;
 
     if (!parsedStoredParams) {
@@ -142,7 +128,7 @@ export class WindowObserver {
   }
 
   isMain(): boolean {
-    const parsedStoredParams = this._getParsedWindowParams();
+    const parsedStoredParams = this._storageManager.getParamsAll();
 
     if (!parsedStoredParams) {
       return false;
