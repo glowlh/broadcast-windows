@@ -78,6 +78,31 @@ export const animationMoving = (from: AnimationParams, to: AnimationParams) => {
         top: ${from.y || 0}px;
         transform: rotate(0deg);
     }
+    50% {
+        left: ${to.x || 0}px;
+        top: ${to.y || 0}px;
+        transform: rotate(360deg);
+    }
+      
+    100% {
+        left: ${from.x || 0}px;
+        top: ${from.y || 0}px;
+        transform: rotate(720deg);
+    }
+`;
+
+  return css`
+    ${animation} 2s linear
+  `;
+};
+
+export const animationMovingInitial = (from: AnimationParams, to: AnimationParams) => {
+  const animation = keyframes`
+    0% {
+        left: ${from.x || 0}px;
+        top: ${from.y || 0}px;
+        transform: rotate(0deg);
+    }
     100% {
         left: ${to.x || 0}px;
         top: ${to.y || 0}px;
@@ -86,7 +111,7 @@ export const animationMoving = (from: AnimationParams, to: AnimationParams) => {
 `;
 
   return css`
-    ${animation} 5s linear
+    ${animation} 2s linear
   `;
 };
 
@@ -97,7 +122,7 @@ export const Particle = styled.img<Path & { hasAnimation: boolean }>`
   ${({ hasAnimation }) =>
     hasAnimation
       ? css`
-          animation: ${({ from, to }) => animationMoving(from, to)};
+          animation: ${({ from, to }) => animationMovingInitial(from, to)};
         `
       : ""}}
   

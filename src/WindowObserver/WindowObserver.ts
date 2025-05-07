@@ -96,6 +96,7 @@ export class WindowObserver {
   }
 
   start() {
+    console.info("--start--");
     this._init();
   }
 

@@ -1,4 +1,43 @@
-import { WindowParams, Path as IPath, AnimationParams } from "../types.ts";
+import {WindowParams, Path as IPath, AnimationParams, Sectors} from "../types.ts";
+
+const CALCULATION_MAP: Record<Sectors, (window: WindowParams, screenPath: IPath) => AnimationParams> = {
+  RIGHT: (window: WindowParams, screenPath: IPath) => {
+    const { from, to } = screenPath;
+    return {
+      x: window.x + window.width,
+      y: ((to.y - from.y) * (window.x + window.width - from.x)) /
+        (to.x - from.x) +
+        from.y,
+    }
+  },
+  LEFT: (window: WindowParams, screenPath: IPath) => {
+    const { from, to } = screenPath;
+    return {
+      x: window.x,
+      y: ((to.y - from.y) * (window.x - from.x)) /
+        (to.x - from.x) +
+        from.y,
+    }
+  },
+  TOP: (window: WindowParams, screenPath: IPath) => {
+    const { from, to } = screenPath;
+    return {
+      y: window.y,
+      x: ((to.x - from.x) * (window.y - from.x)) /
+        (to.y - from.y) +
+        from.x,
+    }
+  },
+  BOTTOM: (window: WindowParams, screenPath: IPath) => {
+    const { from, to } = screenPath;
+    return {
+      y: window.y + window.height,
+      x: ((to.x - from.x) * (window.y + window.height - from.x)) /
+        (to.y - from.y) +
+        from.x,
+    }
+  },
+};
 
 export class Path {
   private _pX;
@@ -56,31 +95,51 @@ export class Path {
 
   private _calcScreenIntersectionPoint(): AnimationParams | null {
     const path = this._calcScreenPortalPath();
+    console.log('path', path);
     if (!path || !this._window) {
       return null;
     }
 
-    const { from, to } = path;
-
     if (this._isMain) {
-      if (from.x < to.x) {
-        return {
-          x: this._window.x + this._window.width,
-          y:
-            ((to.y - from.y) * (this._window.x + this._window.width - from.x)) /
-              (to.x - from.x) +
-            from.y,
-        };
-      } else {
-        return {
-          x:
-            ((this._window.y + this._window.height - from.y) *
-              (to.x - from.x)) /
-              (to.y - from.y) +
-            from.x,
-          y: this._window.y + this._window.height,
-        };
-      }
+      let intersectionPoint = {};
+      let sectorName = '';
+      const x1 = this._window.x;
+      const x2 = this._window.x + this._window.width;
+      const y1 =  this._window.y;
+      const y2 = this._window.y + this._window.height;
+      console.log('win', x1, x2, y1, y2);
+
+      // TODO: changes to portal coordinate conditions
+      Object.keys(CALCULATION_MAP).some((sector: Sectors) => {
+        const { x, y } = CALCULATION_MAP[sector](this._window, path);
+        sectorName = sector;
+
+        // Right
+        if (x === x2 && y <= y2 && y >= y1) {
+          intersectionPoint = { x, y };
+          return true;
+        }
+        // Left
+        if (x === x1 && y <= y2 && y >= y1) {
+          intersectionPoint = { x, y };
+          return true;
+        }
+        // Top
+        if (y === y1 && x <= x2 && x >= x1) {
+          intersectionPoint = { x, y };
+          return true;
+        }
+        // Bottom
+        if (y === y2 && x <= x2 && x >= x1) {
+          intersectionPoint = { x, y };
+          return true;
+        }
+
+        return false;
+      });
+      console.log('intersection', intersectionPoint, sectorName);
+
+      return intersectionPoint;
     }
 
     return null;
