@@ -19,3 +19,10 @@ export interface WindowParams {
   height: number;
   id: string;
 }
+
+export enum Sectors {
+  RIGHT = 'RIGHT',
+  BOTTOM = 'BOTTOM',
+  LEFT = 'LEFT',
+  TOP = 'TOP',
+}

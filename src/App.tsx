@@ -65,10 +65,17 @@ function App() {
       y: getPortalPosition() ? getPortalPosition()?.y + getPortalPosition()?.height / 2 : 0,
     };
 
-    setPath({
-      from,
-      to,
-    });
+    if (wo.isMain) {
+      setPath({
+        from,
+        to,
+      });
+    } else {
+      setPath({
+        to: from,
+        from: to,
+      });
+    }
   };
 
   useEffect(() => {
