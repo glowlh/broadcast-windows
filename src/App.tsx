@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react'
 import boxImage from '../public/box.png';
-import { Box, Particle, PortalBox } from './styles.ts';
+import { Box, Button, ButtonsBox, HeaderTextID, Particle, PortalBox } from './styles.ts';
 import { WindowObserver } from './WindowObserver';
 import { AnimationParams, Path as IPath } from './types.ts';
 import { Path } from './Path';
 import { STORAGE_ANIMATION_STATE, STORAGE_WINDOWS_PARAMS_NAME } from './StorageManager';
+import { ClearIcon, NewWindowIcon, StartIcon, StopIcon } from './Icons';
 const wo = new WindowObserver();
 let pathBuilder: Path;
 
@@ -110,11 +111,15 @@ function App() {
 
   return (
     <Box>
-      Window {wo.id}
-      <button onClick={handleClickStart}>Start</button>
-      <button onClick={() => wo.stop()}>Stop</button>
-      <button onClick={() => wo.clear()}>Clear</button>
-      <button onClick={handleOpenNewWindow}>Open new window</button>
+      <ButtonsBox>
+        <Button onClick={handleClickStart} hint='Start'><StartIcon /></Button>
+        <Button onClick={() => wo.stop()} hint='Stop'><StopIcon /></Button>
+        <Button onClick={() => wo.clear()} hint='Clear Cache'><ClearIcon /></Button>
+        <Button onClick={handleOpenNewWindow} hint='Open New Window'><NewWindowIcon /></Button>
+      </ButtonsBox>
+      {
+        wo.id && (<HeaderTextID>ID: {wo.id}</HeaderTextID>)
+      }
 
       {
         hasAnimation ? <Particle

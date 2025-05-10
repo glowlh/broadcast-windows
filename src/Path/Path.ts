@@ -1,41 +1,47 @@
-import {WindowParams, Path as IPath, AnimationParams, Sectors} from "../types.ts";
+import {
+  WindowParams,
+  Path as IPath,
+  AnimationParams,
+  Sectors,
+} from "../types.ts";
 
-const CALCULATION_MAP: Record<Sectors, (window: WindowParams, screenPath: IPath) => AnimationParams> = {
+const CALCULATION_MAP: Record<
+  Sectors,
+  (window: WindowParams, screenPath: IPath) => AnimationParams
+> = {
   RIGHT: (window: WindowParams, screenPath: IPath) => {
     const { from, to } = screenPath;
     return {
       x: window.x + window.width,
-      y: ((to.y - from.y) * (window.x + window.width - from.x)) /
-        (to.x - from.x) +
+      y:
+        ((to.y - from.y) * (window.x + window.width - from.x)) /
+          (to.x - from.x) +
         from.y,
-    }
+    };
   },
   LEFT: (window: WindowParams, screenPath: IPath) => {
     const { from, to } = screenPath;
     return {
       x: window.x,
-      y: ((to.y - from.y) * (window.x - from.x)) /
-        (to.x - from.x) +
-        from.y,
-    }
+      y: ((to.y - from.y) * (window.x - from.x)) / (to.x - from.x) + from.y,
+    };
   },
   TOP: (window: WindowParams, screenPath: IPath) => {
     const { from, to } = screenPath;
     return {
       y: window.y,
-      x: ((to.x - from.x) * (window.y - from.x)) /
-        (to.y - from.y) +
-        from.x,
-    }
+      x: ((to.x - from.x) * (window.y - from.x)) / (to.y - from.y) + from.x,
+    };
   },
   BOTTOM: (window: WindowParams, screenPath: IPath) => {
     const { from, to } = screenPath;
     return {
       y: window.y + window.height,
-      x: ((to.x - from.x) * (window.y + window.height - from.x)) /
-        (to.y - from.y) +
+      x:
+        ((to.x - from.x) * (window.y + window.height - from.x)) /
+          (to.y - from.y) +
         from.x,
-    }
+    };
   },
 };
 
@@ -95,19 +101,19 @@ export class Path {
 
   private _calcScreenIntersectionPoint(): AnimationParams | null {
     const path = this._calcScreenPortalPath();
-    console.log('path', path);
+    console.log("path", path);
     if (!path || !this._window) {
       return null;
     }
 
     if (this._isMain) {
       let intersectionPoint = {};
-      let sectorName = '';
+      let sectorName = "";
       const x1 = this._window.x;
       const x2 = this._window.x + this._window.width;
-      const y1 =  this._window.y;
+      const y1 = this._window.y;
       const y2 = this._window.y + this._window.height;
-      console.log('win', x1, x2, y1, y2);
+      console.log("win", x1, x2, y1, y2);
 
       // TODO: changes to portal coordinate conditions
       Object.keys(CALCULATION_MAP).some((sector: Sectors) => {
@@ -137,7 +143,7 @@ export class Path {
 
         return false;
       });
-      console.log('intersection', intersectionPoint, sectorName);
+      console.log("intersection", intersectionPoint, sectorName);
 
       return intersectionPoint;
     }
