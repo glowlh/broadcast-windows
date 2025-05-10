@@ -1,6 +1,29 @@
 import styled, { createGlobalStyle, css, keyframes } from "styled-components";
 import { AnimationParams, Path } from "./types.ts";
 
+export const GlobalStyles = createGlobalStyle`
+    @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+    
+    html,
+    body {
+        padding: 0;
+        margin: 0;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    * {
+        box-sizing: border-box;
+        font-family: "Lato", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        color: azure;
+    }
+`;
+
 const PORTAL_COLOR = {
   main: {
     border: "#0559D8",
@@ -16,13 +39,13 @@ export const Box = styled.div`
   background: #1a1a1a;
   height: 100vh;
   width: 100%;
-  padding: 0;
-  margin: 0;
   color: #afafaf;
-  margin: auto;
+  margin: 0;
+  padding: 24px 16px;
 
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: start;
   gap: 8px;
   position: relative;
   overflow: hidden;
@@ -96,7 +119,10 @@ export const animationMoving = (from: AnimationParams, to: AnimationParams) => {
   `;
 };
 
-export const animationMovingInitial = (from: AnimationParams, to: AnimationParams) => {
+export const animationMovingInitial = (
+  from: AnimationParams,
+  to: AnimationParams,
+) => {
   const animation = keyframes`
     0% {
         left: ${from.x || 0}px;
@@ -128,19 +154,49 @@ export const Particle = styled.img<Path & { hasAnimation: boolean }>`
   
 `;
 
-export const GlobalStyles = createGlobalStyle`
-    html,
-    body {
-        padding: 0;
-        margin: 0;
-    }
+export const ButtonsBox = styled.div`
+  display: flex;
+  gap: 8px;
+`;
 
-    a {
-        color: inherit;
-        text-decoration: none;
-    }
+export const Button = styled.button<{ hint: string }>`
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
 
-    * {
-        box-sizing: border-box;
+  &:hover {
+    background: transparent;
+
+    & * {
+      fill: beige;
     }
+  }
+
+  &:before {
+    content: "${({ hint }) => hint}";
+    position: absolute;
+    bottom: calc(100% + 4px);
+    width: 100%;
+    white-space: nowrap;
+    color: beige;
+    display: none;
+  }
+
+  &:hover:before {
+    display: block;
+  }
+
+  * {
+    fill: azure;
+  }
+`;
+
+export const HeaderTextID = styled.h1`
+  margin: 0;
+  opacity: 0.2;
+  font-size: 18px;
+  margin-left: auto;
+  padding: 0;
+  font-weight: 300;
 `;

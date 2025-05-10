@@ -21,8 +21,8 @@ export interface WindowParams {
 }
 
 export enum Sectors {
-  RIGHT = 'RIGHT',
-  BOTTOM = 'BOTTOM',
-  LEFT = 'LEFT',
-  TOP = 'TOP',
+  RIGHT = "RIGHT",
+  BOTTOM = "BOTTOM",
+  LEFT = "LEFT",
+  TOP = "TOP",
 }
