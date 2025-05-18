@@ -1,5 +1,7 @@
 # <img src="./public/logo.png" width="34px" alt="" /> Portal Windows
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/N7wcZw6vXwQ?si=wggfwU6gJli0dm0M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## 📖 Introduction
 Shows an approach to managing multiple synchronized browser windows using plain 
 web APIs and `localStorage`. It allows you to open and control several (in this case is two) fullscreen windows, 
