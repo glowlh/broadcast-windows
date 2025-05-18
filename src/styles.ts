@@ -1,5 +1,5 @@
-import styled, { createGlobalStyle, css, keyframes } from "styled-components";
-import { AnimationParams, Path } from "./types.ts";
+import styled, { createGlobalStyle, css, keyframes } from 'styled-components';
+import { AnimationParams, Path } from './types.ts';
 
 export const GlobalStyles = createGlobalStyle`
     @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
@@ -26,12 +26,12 @@ export const GlobalStyles = createGlobalStyle`
 
 const PORTAL_COLOR = {
   main: {
-    border: "#0559D8",
-    shadow: "rgba(72, 140, 232, 0.51)",
+    border: '#0559D8',
+    shadow: 'rgba(72, 140, 232, 0.51)',
   },
   secondary: {
-    border: "#B0320B",
-    shadow: "rgba(232, 142, 86, 0.51)",
+    border: '#B0320B',
+    shadow: 'rgba(232, 142, 86, 0.51)',
   },
 };
 
@@ -83,7 +83,7 @@ export const PortalBox = styled.div<{ isMain: boolean }>`
       isMain ? PORTAL_COLOR.main.shadow : PORTAL_COLOR.secondary.shadow};
 
   &:before {
-    content: "";
+    content: '';
     position: absolute;
     width: 100%;
     height: 100%;
@@ -156,7 +156,7 @@ export const Particle = styled.img<
               ? animationMovingInitial(from, to)
               : animationMoving(from, to)};
         `
-      : ""}}
+      : ''}}
   
 `;
 
@@ -180,7 +180,7 @@ export const Button = styled.button<{ hint: string }>`
   }
 
   &:before {
-    content: "${({ hint }) => hint}";
+    content: '${({ hint }) => hint}';
     position: absolute;
     bottom: calc(100% + 4px);
     width: 100%;

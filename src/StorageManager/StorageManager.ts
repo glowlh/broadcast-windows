@@ -1,8 +1,8 @@
-import { WindowsParamsStorage, WindowParams } from "../types.ts";
+import { WindowParams, WindowsParamsStorage } from '../types.ts';
 
-export const STORAGE_WINDOWS_PARAMS_NAME = "WINDOWS";
-export const STORAGE_WINDOWS_COUNT_NAME = "COUNT";
-export const STORAGE_ANIMATION_STATE = "ANIMATION";
+export const STORAGE_WINDOWS_PARAMS_NAME = 'WINDOWS';
+export const STORAGE_WINDOWS_COUNT_NAME = 'COUNT';
+export const STORAGE_ANIMATION_STATE = 'ANIMATION';
 
 export class StorageManager {
   public paramsScope: string;

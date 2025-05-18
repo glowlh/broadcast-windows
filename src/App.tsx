@@ -1,11 +1,12 @@
-import { useState, useRef, useEffect } from 'react'
-import boxImage from '../public/box.png';
+import { ReactNode, useEffect, useRef, useState } from 'react'
+import { Path } from './Path';
 import { Box, Button, ButtonsBox, HeaderTextID, Particle, PortalBox } from './styles.ts';
+import boxImage from '../public/box.png';
 import { WindowObserver } from './WindowObserver';
 import { AnimationParams, Path as IPath } from './types.ts';
-import { Path } from './Path';
 import { STORAGE_ANIMATION_STATE, STORAGE_WINDOWS_PARAMS_NAME } from './StorageManager';
 import { ClearIcon, NewWindowIcon, StartIcon, StopIcon } from './Icons';
+
 const wo = new WindowObserver();
 let pathBuilder: Path;
 
@@ -34,7 +35,6 @@ function App() {
       anotherWindowParams: wo.getAnotherWindowParamsFromStore(),
     });
     updatePath();
-    // setIsInitial(true);
   };
 
   const handleUpdateStorage = (event) => {
@@ -78,18 +78,18 @@ function App() {
   };
 
   useEffect(() => {
-      const position: DOMRect | null = getPortalPosition();
+    const position: DOMRect | null = getPortalPosition();
 
-      if (position) {
-        pathBuilder = new Path({
-          portalPosition: position,
-          windowParams: wo.getWindowParamsFromStore(),
-          anotherWindowParams: wo.getAnotherWindowParamsFromStore(),
-          isMain: wo.isMain,
-        });
+    if (position) {
+      pathBuilder = new Path({
+        portalPosition: position,
+        windowParams: wo.getWindowParamsFromStore(),
+        anotherWindowParams: wo.getAnotherWindowParamsFromStore(),
+        isMain: wo.isMain,
+      });
 
-        updatePath();
-      }
+      updatePath();
+    }
   }, []);
 
   const handleStartAnimation = () => {
@@ -117,20 +117,20 @@ function App() {
         <Button onClick={handleOpenNewWindow} hint='Open New Window'><NewWindowIcon /></Button>
       </ButtonsBox>
       {
-        wo.id && (<HeaderTextID>ID: {wo.id}</HeaderTextID>)
+        wo.id && (<HeaderTextID>ID: {wo.id}</HeaderTextID> as ReactNode)
       }
 
       {
-        hasAnimation ? <Particle
+        hasAnimation ? (<Particle
           canAnimate={hasAnimation}
           isInitial={isInitial && wo.isMain}
           onAnimationEnd={handleEndAnimation}
           onAnimationStart={handleStartAnimation}
           alt=''
-          src={boxImage}
+          src={boxImage as string}
           from={{ x: path?.from?.x, y: path?.from?.y }}
           to={{ x: path?.to?.x, y: path?.to?.y }}
-        /> : null
+        /> as ReactNode) : null
       }
 
       <PortalBox ref={portalRef} isMain={wo.isMain} />

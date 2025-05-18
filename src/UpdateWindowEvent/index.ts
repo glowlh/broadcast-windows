@@ -1,1 +1,1 @@
-export * from "./UpdateWindowEvent.ts";
+export * from './UpdateWindowEvent.ts';
