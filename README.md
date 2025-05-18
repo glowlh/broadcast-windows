@@ -1,4 +1,4 @@
-# <img src="./public/logo.png" width="34px" alt="" /> Broadcast Windows
+# <img src="./public/logo.png" width="34px" alt="" /> Portal Windows
 
 ## 📖 Introduction
 Shows an approach to managing multiple synchronized browser windows using plain 
