@@ -101,49 +101,43 @@ export class Path {
 
   private _calcScreenIntersectionPoint(): AnimationParams | null {
     const path = this._calcScreenPortalPath();
-    console.log("path", path);
     if (!path || !this._window) {
       return null;
     }
 
     if (this._isMain) {
       let intersectionPoint = {};
-      let sectorName = "";
       const x1 = this._window.x;
       const x2 = this._window.x + this._window.width;
       const y1 = this._window.y;
       const y2 = this._window.y + this._window.height;
-      console.log("win", x1, x2, y1, y2);
 
-      // TODO: changes to portal coordinate conditions
       Object.keys(CALCULATION_MAP).some((sector: Sectors) => {
         const { x, y } = CALCULATION_MAP[sector](this._window, path);
-        sectorName = sector;
 
         // Right
-        if (x === x2 && y <= y2 && y >= y1) {
+        if (x === x2 && y <= y2 && y >= y1 && path.to.x > x2) {
           intersectionPoint = { x, y };
           return true;
         }
         // Left
-        if (x === x1 && y <= y2 && y >= y1) {
+        if (x === x1 && y <= y2 && y >= y1 && path.to.x < x1) {
           intersectionPoint = { x, y };
           return true;
         }
         // Top
-        if (y === y1 && x <= x2 && x >= x1) {
+        if (y === y1 && x <= x2 && x >= x1 && path.to.y < y1) {
           intersectionPoint = { x, y };
           return true;
         }
         // Bottom
-        if (y === y2 && x <= x2 && x >= x1) {
+        if (y === y2 && x <= x2 && x >= x1 && path.to.y > y2) {
           intersectionPoint = { x, y };
           return true;
         }
 
         return false;
       });
-      console.log("intersection", intersectionPoint, sectorName);
 
       return intersectionPoint;
     }

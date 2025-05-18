@@ -53,13 +53,13 @@ export const Box = styled.div`
 
 const portalAnimation = keyframes`
     0% {
-        transform: rotate(0deg) skew(0deg, 0deg);
+        transform: rotate(0deg) skew(0deg, 0deg) translate(-50%, -50%);
     }
     50% {
-        transform: rotate(-15deg) skew(20deg, 30deg);
+        transform: rotate(-5deg) skew(20deg, 30deg) translate(-50%, -50%);
     }
     100% {
-        transform: rotate(-35deg) skew(0deg, 0deg);
+        transform: rotate(-10deg) skew(0deg, 0deg) translate(-50%, -50%);
     }
 `;
 
@@ -77,6 +77,7 @@ export const PortalBox = styled.div<{ isMain: boolean }>`
       isMain ? PORTAL_COLOR.main.border : PORTAL_COLOR.secondary.border};
 
   animation: 4s linear 0s infinite alternate ${portalAnimation};
+  transform-origin: center;
   box-shadow: 0px 0px 20px 2px
     ${({ isMain }) =>
       isMain ? PORTAL_COLOR.main.shadow : PORTAL_COLOR.secondary.shadow};
@@ -141,14 +142,19 @@ export const animationMovingInitial = (
   `;
 };
 
-export const Particle = styled.img<Path & { hasAnimation: boolean }>`
+export const Particle = styled.img<
+  Path & { canAnimate: boolean; isInitial: boolean }
+>`
   position: absolute;
   width: 30px;
   height: 30px;
-  ${({ hasAnimation }) =>
-    hasAnimation
+  ${({ canAnimate }) =>
+    canAnimate
       ? css`
-          animation: ${({ from, to }) => animationMovingInitial(from, to)};
+          animation: ${({ from, to, isInitial }) =>
+            isInitial
+              ? animationMovingInitial(from, to)
+              : animationMoving(from, to)};
         `
       : ""}}
   

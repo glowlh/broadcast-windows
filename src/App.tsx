@@ -12,6 +12,7 @@ let pathBuilder: Path;
 function App() {
   const [path, setPath] = useState<IPath>();
   const [hasAnimation, setHasAnimation] = useState(false);
+  const [isInitial, setIsInitial] = useState(false);
   const portalRef = useRef(null);
 
   const getPortalPosition = () => {
@@ -27,27 +28,24 @@ function App() {
     window.open('/', `window ${self.crypto.randomUUID()}`, 'width=600,height=400');
   }
 
-  const handleUpdateStorage = (event) => {
-    if (event.key === STORAGE_WINDOWS_PARAMS_NAME) {
-      pathBuilder.update({
-        windowParams: wo.getWindowParamsFromStore(),
-        anotherWindowParams: wo.getAnotherWindowParamsFromStore(),
-      });
-      updatePath();
-    }
-
-    if (event.key === STORAGE_ANIMATION_STATE && wo.activeAnimation === wo.id) {
-      setHasAnimation(true);
-    }
-  };
-
   const handleUpdateWindow = () => {
     pathBuilder.update({
       windowParams: wo.getWindowParamsFromStore(),
       anotherWindowParams: wo.getAnotherWindowParamsFromStore(),
     });
     updatePath();
-  }
+    // setIsInitial(true);
+  };
+
+  const handleUpdateStorage = (event) => {
+    if (event.key === STORAGE_WINDOWS_PARAMS_NAME) {
+      handleUpdateWindow();
+    }
+
+    if (event.key === STORAGE_ANIMATION_STATE && wo.activeAnimation === wo.id) {
+      setHasAnimation(true);
+    }
+  };
 
   useEffect(() => {
     window.addEventListener('storage', handleUpdateStorage, true);
@@ -66,16 +64,16 @@ function App() {
       y: getPortalPosition() ? getPortalPosition()?.y + getPortalPosition()?.height / 2 : 0,
     };
 
-    if (wo.isMain) {
+    if (wo.isMain && isInitial) {
       setPath({
         from,
         to,
-      });
+      } as IPath);
     } else {
       setPath({
         to: from,
         from: to,
-      });
+      } as IPath);
     }
   };
 
@@ -102,6 +100,7 @@ function App() {
   const handleEndAnimation = () => {
     wo.stopAnimation();
     setHasAnimation(false);
+    setIsInitial(false);
   }
 
   const handleClickStart = () => {
@@ -123,7 +122,8 @@ function App() {
 
       {
         hasAnimation ? <Particle
-          hasAnimation={hasAnimation}
+          canAnimate={hasAnimation}
+          isInitial={isInitial && wo.isMain}
           onAnimationEnd={handleEndAnimation}
           onAnimationStart={handleStartAnimation}
           alt=''
