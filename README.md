@@ -3,7 +3,9 @@
 ## 📖 Introduction
 Shows an approach to managing multiple synchronized browser windows using plain 
 web APIs and `localStorage`. It allows you to open and control several (in this case is two) fullscreen windows, 
-sharing state between them without any backend. 
+sharing state between them without any backend.
+
+🔗 [Video](https://www.youtube.com/watch?v=N7wcZw6vXwQ)
 
 ---
 
