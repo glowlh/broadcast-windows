@@ -1,1 +1,1 @@
-export * from "./StorageManager.ts";
+export * from './StorageManager.ts';

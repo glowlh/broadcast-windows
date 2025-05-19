@@ -26,6 +26,17 @@ export default tseslint.config(
       'quotes': ['error', 'single', { 'avoidEscape': true }],
       'object-curly-spacing': ['error', 'always'],
       '@typescript-eslint/no-explicit-any': 'off',
+      'indent': ['error', 2],
+      "sort-imports": [
+        'error',
+        {
+          allowSeparatedGroups: true,
+          ignoreCase: true,
+          ignoreDeclarationSort: true,
+          ignoreMemberSort: false,
+          memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
+        },
+      ]
     },
   },
 )

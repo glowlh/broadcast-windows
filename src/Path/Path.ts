@@ -1,9 +1,9 @@
 import {
-  WindowParams,
-  Path as IPath,
   AnimationParams,
+  Path as IPath,
   Sectors,
-} from "../types.ts";
+  WindowParams,
+} from '../types.ts';
 
 const CALCULATION_MAP: Record<
   Sectors,
@@ -87,16 +87,6 @@ export class Path {
     }
 
     return null;
-    // {
-    //   from: {
-    //     x: this._pX + this._anotherWindow.x,
-    //     y: this._pY + this._anotherWindow.y,
-    //   },
-    //   to: {
-    //     x: this._pX + this._window.x,
-    //     y: this._pY + this._window.y,
-    //   },
-    // };
   }
 
   private _calcScreenIntersectionPoint(): AnimationParams | null {
