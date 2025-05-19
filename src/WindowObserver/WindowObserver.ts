@@ -48,36 +48,20 @@ export class WindowObserver {
 
     const storedParams = this._storageManager.getParamsAll();
     const nextStoredParams = storedParams || {};
+    const existingParams = nextStoredParams[this.id];
 
-    if (storedParams) {
-      if (nextStoredParams[this.id]) {
-        if (!this._isEqualParams(windowParams, nextStoredParams[this.id])) {
-          nextStoredParams[this.id] = {
-            id: this.id,
-            index: this.index,
-            ...windowParams,
-          };
-        } else {
-          return;
-        }
-      } else {
-        nextStoredParams[this.id] = {
-          id: this.id,
-          index: this.index,
-          ...windowParams,
-        };
-      }
-    } else {
-      nextStoredParams[this.id] = {
-        id: this.id,
-        index: this.index,
-        ...windowParams,
-      };
+    const newParams = {
+      id: this.id,
+      index: this.index,
+      ...windowParams,
+    };
+
+    if (!existingParams || !this._isEqualParams(windowParams, existingParams)) {
+      nextStoredParams[this.id] = newParams;
+      this._storageManager.setParamsAll(nextStoredParams);
+      this._storageManager.addAnimationForWindow(this.id);
+      window.dispatchEvent(updateWindowEvent);
     }
-
-    this._storageManager.setParamsAll(nextStoredParams);
-    this._storageManager.addAnimationForWindow(this.id);
-    window.dispatchEvent(updateWindowEvent);
   }
 
   private _getWindowParams(): WindowParams {
